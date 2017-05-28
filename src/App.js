@@ -20,6 +20,10 @@ class Clock extends Component {
     });
   }
 
+  componentWillUnmount() {
+    clearInterval(this.state.intervalID);
+  }
+
   tick() {
     const time = this.state.datetime;
     time.setSeconds(time.getSeconds() + 1);
