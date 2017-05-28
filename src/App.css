@@ -1,1 +1,7 @@
-
+.clock {
+  max-width: 500px;
+  margin: 15px auto;
+  text-align: center;
+  font-size: 60px;
+  font-family: Courier, monospace;
+}
