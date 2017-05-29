@@ -1,5 +1,10 @@
 import React, { Component } from 'react';
+import injectTapEventPlugin from 'react-tap-event-plugin';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import TimerPicker from 'material-ui/TimePicker';
 import './App.css';
+
+injectTapEventPlugin();
 
 class Clock extends Component {
   render() {
@@ -17,9 +22,11 @@ class App extends Component {
     super(props);
     this.state = {
       datetime: null,
-      intervalID: null
+      intervalID: null,
+      alarm: null
     }
     this.tick = this.tick.bind(this);
+    this.setAlarm = this.setAlarm.bind(this);
   }
 
   componentWillMount() {
@@ -43,13 +50,32 @@ class App extends Component {
     });
   }
 
+  setAlarm(event, date) {
+    this.setState({alarm: date});
+  }
+
   render() {
+    let controls = null;
+    if (!this.state.alarm) {
+      controls = (
+        <MuiThemeProvider>
+          <TimerPicker
+            hintText="Add Alarm"
+            onChange={this.setAlarm}
+          />
+        </MuiThemeProvider>
+      );
+    }
+
     return (
       <div className="App">
         <Clock 
           time={this.state.datetime}
           className="clock"
         />
+        <div className="controls">
+          {controls}
+        </div>
       </div>
     );
   }
