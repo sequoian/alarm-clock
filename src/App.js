@@ -64,7 +64,8 @@ class App extends Component {
       datetime: null,
       intervalID: null,
       alarm: null,
-      alert: false
+      alert: false,
+      notify: false
     }
     this.tick = this.tick.bind(this);
     this.setAlarm = this.setAlarm.bind(this);
@@ -101,11 +102,34 @@ class App extends Component {
         this.setState({
           alert: true
         })
+        
+        // notify user
+        if (this.state.notify) {
+          const options = {
+            hour: 'numeric',
+            minute: 'numeric'
+          }
+          const time = this.state.alarm.toLocaleTimeString([], options);
+          const n = new Notification ("Alarm", {
+            body: `Your alarm for ${time} has gone off.`
+          });
+        }
       }
     }
   }
 
   setAlarm(event, date) {
+    // check user for notification permission
+    if (!this.state.notify) {
+      Notification.requestPermission().then((result) => {
+        if (result === 'granted') {
+          this.setState({
+            notify: true
+          });
+        }
+      });
+    }
+
     date.setSeconds(0, 0);
     this.setState({alarm: date});
   }
