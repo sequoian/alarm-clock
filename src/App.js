@@ -35,6 +35,28 @@ class AlarmDisplay extends Component {
   }
 }
 
+class AlertDisplay extends Component {
+  render() {
+    const options = {
+      hour: 'numeric',
+      minute: 'numeric'
+    }
+    const time = this.props.alarm.toLocaleTimeString([], options);
+    return (
+      <div>
+        <div>Alarm for {time} has finished</div>
+        <button
+          className="reset"
+          type="button"
+          onClick={this.props.resetAlarm}
+        >
+          Thank you
+        </button>
+      </div>
+    );
+  }
+}
+
 class App extends Component {
     constructor(props) {
     super(props);
@@ -48,6 +70,7 @@ class App extends Component {
     this.setAlarm = this.setAlarm.bind(this);
     this.removeAlarm = this.removeAlarm.bind(this);
     this.checkAlarm = this.checkAlarm.bind(this);
+    this.resetAlarm = this.resetAlarm.bind(this);
   }
 
   componentWillMount() {
@@ -75,7 +98,9 @@ class App extends Component {
   checkAlarm(time) {
     if (this.state.alarm && !this.state.alert) {
       if (time.toTimeString() === this.state.alarm.toTimeString()) {
-        console.log('alert!');
+        this.setState({
+          alert: true
+        })
       }
     }
   }
@@ -87,6 +112,13 @@ class App extends Component {
 
   removeAlarm() {
     this.setState({alarm: null});
+  }
+
+  resetAlarm() {
+    this.setState({
+      alarm: null,
+      alert: false
+    })
   }
 
   render() {
@@ -108,6 +140,14 @@ class App extends Component {
           removeAlarm={this.removeAlarm}
         />
       );
+    }
+    else {
+      controls = (
+        <AlertDisplay
+          alarm={this.state.alarm}
+          resetAlarm={this.resetAlarm}
+        />
+      )
     }
 
     return (
