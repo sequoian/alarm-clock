@@ -25,7 +25,7 @@ class AlarmDisplay extends Component {
     }
     const time = this.props.alarm.toLocaleTimeString([], options);
     return (
-      <div className="alarm-display">
+      <div className="alarm">
         <div className="message">Alarm is set for {time}</div>
         <div className="delete"
           onClick={this.props.removeAlarm}
@@ -43,7 +43,7 @@ class AlertDisplay extends Component {
     }
     const time = this.props.alarm.toLocaleTimeString([], options);
     return (
-      <div>
+      <div className="alarm">
         <div>Alarm for {time} has finished</div>
         <button
           className="reset"
@@ -125,12 +125,14 @@ class App extends Component {
     let controls = null;
     if (!this.state.alarm) {
       controls = (
-        <MuiThemeProvider>
-          <TimerPicker
-            hintText="Set Alarm"
-            onChange={this.setAlarm}
-          />
-        </MuiThemeProvider>
+        <div className="alarm">
+          <MuiThemeProvider>
+            <TimerPicker
+              hintText="Set Alarm"
+              onChange={this.setAlarm}
+            />
+          </MuiThemeProvider>
+        </div>
       );
     }
     else if (this.state.alarm && !this.state.alert) {
