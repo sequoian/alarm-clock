@@ -17,13 +17,29 @@ class Clock extends Component {
   }
 }
 
+class AlarmDisplay extends Component {
+  render() {
+    const options = {
+      hour: 'numeric',
+      minute: 'numeric'
+    }
+    const time = this.props.alarm.toLocaleTimeString([], options);
+    return (
+      <div className="alarm-display">
+        <div>Alarm is set for {time}</div>
+      </div>
+    );
+  }
+}
+
 class App extends Component {
     constructor(props) {
     super(props);
     this.state = {
       datetime: null,
       intervalID: null,
-      alarm: null
+      alarm: null,
+      alert: false
     }
     this.tick = this.tick.bind(this);
     this.setAlarm = this.setAlarm.bind(this);
@@ -60,10 +76,17 @@ class App extends Component {
       controls = (
         <MuiThemeProvider>
           <TimerPicker
-            hintText="Add Alarm"
+            hintText="Set Alarm"
             onChange={this.setAlarm}
           />
         </MuiThemeProvider>
+      );
+    }
+    else if (this.state.alarm && !this.state.alert) {
+      controls = (
+        <AlarmDisplay
+          alarm={this.state.alarm}
+        />
       );
     }
 
