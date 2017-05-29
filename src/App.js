@@ -26,7 +26,10 @@ class AlarmDisplay extends Component {
     const time = this.props.alarm.toLocaleTimeString([], options);
     return (
       <div className="alarm-display">
-        <div>Alarm is set for {time}</div>
+        <div className="message">Alarm is set for {time}</div>
+        <div className="delete"
+          onClick={this.props.removeAlarm}
+        />
       </div>
     );
   }
@@ -43,6 +46,7 @@ class App extends Component {
     }
     this.tick = this.tick.bind(this);
     this.setAlarm = this.setAlarm.bind(this);
+    this.removeAlarm = this.removeAlarm.bind(this);
   }
 
   componentWillMount() {
@@ -70,6 +74,10 @@ class App extends Component {
     this.setState({alarm: date});
   }
 
+  removeAlarm() {
+    this.setState({alarm: null});
+  }
+
   render() {
     let controls = null;
     if (!this.state.alarm) {
@@ -86,6 +94,7 @@ class App extends Component {
       controls = (
         <AlarmDisplay
           alarm={this.state.alarm}
+          removeAlarm={this.removeAlarm}
         />
       );
     }
