@@ -19,11 +19,7 @@ class Clock extends Component {
 
 class AlarmDisplay extends Component {
   render() {
-    const options = {
-      hour: 'numeric',
-      minute: 'numeric'
-    }
-    const time = this.props.alarm.toLocaleTimeString([], options);
+    const time = this.props.format(this.props.alarm);
     return (
       <div className="alarm">
         <div className="message">Alarm is set for {time}</div>
@@ -37,11 +33,7 @@ class AlarmDisplay extends Component {
 
 class AlertDisplay extends Component {
   render() {
-    const options = {
-      hour: 'numeric',
-      minute: 'numeric'
-    }
-    const time = this.props.alarm.toLocaleTimeString([], options);
+    const time = this.props.format(this.props.alarm);
     return (
       <div className="alarm">
         <div>Alarm for {time} has finished</div>
@@ -105,11 +97,7 @@ class App extends Component {
         
         // notify user
         if (this.state.notify) {
-          const options = {
-            hour: 'numeric',
-            minute: 'numeric'
-          }
-          const time = this.state.alarm.toLocaleTimeString([], options);
+          const time = this.formatTime(this.state.alarm)
           const n = new Notification ("Alarm", {
             body: `Your alarm for ${time} has gone off.`
           });
@@ -145,6 +133,14 @@ class App extends Component {
     })
   }
 
+  formatTime(date) {
+    const options = {
+      hour: 'numeric',
+      minute: 'numeric'
+    }
+    return date.toLocaleTimeString([], options);
+  }
+
   render() {
     let controls = null;
     if (!this.state.alarm) {
@@ -164,6 +160,7 @@ class App extends Component {
         <AlarmDisplay
           alarm={this.state.alarm}
           removeAlarm={this.removeAlarm}
+          format={this.formatTime}
         />
       );
     }
@@ -172,6 +169,7 @@ class App extends Component {
         <AlertDisplay
           alarm={this.state.alarm}
           resetAlarm={this.resetAlarm}
+          format={this.formatTime}
         />
       )
     }
