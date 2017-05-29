@@ -47,6 +47,7 @@ class App extends Component {
     this.tick = this.tick.bind(this);
     this.setAlarm = this.setAlarm.bind(this);
     this.removeAlarm = this.removeAlarm.bind(this);
+    this.checkAlarm = this.checkAlarm.bind(this);
   }
 
   componentWillMount() {
@@ -65,12 +66,22 @@ class App extends Component {
   tick() {
     const time = this.state.datetime;
     time.setSeconds(time.getSeconds() + 1);
+    this.checkAlarm(time);
     this.setState({
       datetime: time
     });
   }
 
+  checkAlarm(time) {
+    if (this.state.alarm && !this.state.alert) {
+      if (time.toTimeString() === this.state.alarm.toTimeString()) {
+        console.log('alert!');
+      }
+    }
+  }
+
   setAlarm(event, date) {
+    date.setSeconds(0, 0);
     this.setState({alarm: date});
   }
 
