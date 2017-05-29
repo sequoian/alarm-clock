@@ -2,7 +2,18 @@ import React, { Component } from 'react';
 import './App.css';
 
 class Clock extends Component {
-  constructor(props) {
+  render() {
+    const time = this.props.time.toLocaleTimeString()
+    return (
+      <div className={this.props.className}>
+        {time}
+      </div>
+    );
+  }
+}
+
+class App extends Component {
+    constructor(props) {
     super(props);
     this.state = {
       datetime: null,
@@ -33,20 +44,10 @@ class Clock extends Component {
   }
 
   render() {
-    const time = this.state.datetime.toLocaleTimeString()
-    return (
-      <div className={this.props.className}>
-        {time}
-      </div>
-    );
-  }
-}
-
-class App extends Component {
-  render() {
     return (
       <div className="App">
         <Clock 
+          time={this.state.datetime}
           className="clock"
         />
       </div>
