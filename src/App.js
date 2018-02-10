@@ -1,191 +1,126 @@
-import React, { Component } from 'react';
-import injectTapEventPlugin from 'react-tap-event-plugin';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import TimerPicker from 'material-ui/TimePicker';
-import './App.css';
+import React, { Component } from 'react'
+import moment from 'moment'
+import ClockDisplay from './ClockDisplay'
+import Format from './Format'
+//import './App.css';
 
-injectTapEventPlugin();
-
-class Clock extends Component {
-  render() {
-    const time = this.props.time.toLocaleTimeString()
-    return (
-      <div className={this.props.className}>
-        {time}
-      </div>
-    );
-  }
-}
-
-class AlarmDisplay extends Component {
-  render() {
-    const time = this.props.format(this.props.alarm);
-    return (
-      <div className="alarm">
-        <div className="message">Alarm is set for {time}</div>
-        <div className="delete"
-          onClick={this.props.removeAlarm}
-        />
-      </div>
-    );
-  }
-}
-
-class AlertDisplay extends Component {
-  render() {
-    const time = this.props.format(this.props.alarm);
-    return (
-      <div className="alarm">
-        <div>Alarm for {time} has finished</div>
-        <button
-          className="reset"
-          type="button"
-          onClick={this.props.resetAlarm}
-        >
-          Thank you
-        </button>
-      </div>
-    );
-  }
-}
 
 class App extends Component {
     constructor(props) {
     super(props);
     this.state = {
-      datetime: null,
-      intervalID: null,
+      time: moment(),
+      intervalId: null,
+      format: 12,
       alarm: null,
       alert: false,
       notify: false
     }
-    this.tick = this.tick.bind(this);
-    this.setAlarm = this.setAlarm.bind(this);
-    this.removeAlarm = this.removeAlarm.bind(this);
-    this.checkAlarm = this.checkAlarm.bind(this);
-    this.resetAlarm = this.resetAlarm.bind(this);
+    this.tick = this.tick.bind(this)
+    this.changeFormat = this.changeFormat.bind(this)
+    // this.setAlarm = this.setAlarm.bind(this);
+    // this.removeAlarm = this.removeAlarm.bind(this);
+    // this.checkAlarm = this.checkAlarm.bind(this);
+    // this.resetAlarm = this.resetAlarm.bind(this);
   }
 
-  componentWillMount() {
-    const date = new Date();
-    const interval = setInterval(this.tick, 1000);
-    this.setState({
-      datetime: date,
-      intervalID: interval
-    });
+  componentDidMount() {
+    const {time} = this.state
+    setTimeout(() => {
+      this.tick()
+      this.setState({
+        intervalId: setInterval(() => {
+          this.tick()
+        }, 1000)
+      })
+      
+    }, 1000 - time.milliseconds())
   }
 
   componentWillUnmount() {
-    clearInterval(this.state.intervalID);
+    clearInterval(this.state.intervalId)
   }
 
   tick() {
-    const time = this.state.datetime;
-    time.setSeconds(time.getSeconds() + 1);
-    this.checkAlarm(time);
-    this.setState({
-      datetime: time
-    });
-  }
-
-  checkAlarm(time) {
-    if (this.state.alarm && !this.state.alert) {
-      if (time.toTimeString() === this.state.alarm.toTimeString()) {
-        this.setState({
-          alert: true
-        })
-        
-        // notify user
-        if (this.state.notify) {
-          const time = this.formatTime(this.state.alarm)
-          const n = new Notification ("Alarm", {
-            body: `Your alarm for ${time} has gone off.`
-          });
-        }
+    this.setState(prevState => {
+      return {
+        time: prevState.time.add(1000)
       }
-    }
-  }
-
-  setAlarm(event, date) {
-    // check user for notification permission
-    if (!this.state.notify) {
-      Notification.requestPermission().then((result) => {
-        if (result === 'granted') {
-          this.setState({
-            notify: true
-          });
-        }
-      });
-    }
-
-    date.setSeconds(0, 0);
-    this.setState({alarm: date});
-  }
-
-  removeAlarm() {
-    this.setState({alarm: null});
-  }
-
-  resetAlarm() {
-    this.setState({
-      alarm: null,
-      alert: false
     })
   }
 
-  formatTime(date) {
-    const options = {
-      hour: 'numeric',
-      minute: 'numeric'
-    }
-    return date.toLocaleTimeString([], options);
+  changeFormat(format) {
+    this.setState({format})
   }
 
-  render() {
-    let controls = null;
-    if (!this.state.alarm) {
-      controls = (
-        <div className="alarm">
-          <MuiThemeProvider>
-            <TimerPicker
-              hintText="Set Alarm"
-              onChange={this.setAlarm}
-            />
-          </MuiThemeProvider>
-        </div>
-      );
-    }
-    else if (this.state.alarm && !this.state.alert) {
-      controls = (
-        <AlarmDisplay
-          alarm={this.state.alarm}
-          removeAlarm={this.removeAlarm}
-          format={this.formatTime}
-        />
-      );
-    }
-    else {
-      controls = (
-        <AlertDisplay
-          alarm={this.state.alarm}
-          resetAlarm={this.resetAlarm}
-          format={this.formatTime}
-        />
-      )
-    }
+  // checkAlarm(time) {
+  //   if (this.state.alarm && !this.state.alert) {
+  //     if (time.toTimeString() === this.state.alarm.toTimeString()) {
+  //       this.setState({
+  //         alert: true
+  //       })
+        
+  //       // notify user
+  //       if (this.state.notify) {
+  //         const time = this.formatTime(this.state.alarm)
+  //         const n = new Notification ("Alarm", {
+  //           body: `Your alarm for ${time} has gone off.`
+  //         });
+  //       }
+  //     }
+  //   }
+  // }
 
+  // setAlarm(event, date) {
+  //   // check user for notification permission
+  //   if (!this.state.notify) {
+  //     Notification.requestPermission().then((result) => {
+  //       if (result === 'granted') {
+  //         this.setState({
+  //           notify: true
+  //         });
+  //       }
+  //     });
+  //   }
+
+  //   date.setSeconds(0, 0);
+  //   this.setState({alarm: date});
+  // }
+
+  // removeAlarm() {
+  //   this.setState({alarm: null});
+  // }
+
+  // resetAlarm() {
+  //   this.setState({
+  //     alarm: null,
+  //     alert: false
+  //   })
+  // }
+
+  // formatTime(date) {
+  //   const options = {
+  //     hour: 'numeric',
+  //     minute: 'numeric'
+  //   }
+  //   return date.toLocaleTimeString([], options);
+  // }
+
+  render() {
+    const {time, format} = this.state
     return (
-      <div className="App">
-        <Clock 
-          time={this.state.datetime}
-          className="clock"
+      <div>
+        <ClockDisplay
+          value={time}
+          format={format}
         />
-        <div className="controls">
-          {controls}
-        </div>
+        <Format
+          value={format}
+          onChange={this.changeFormat}
+        />
       </div>
-    );
+    )
   }
 }
 
-export default App;
+export default App
