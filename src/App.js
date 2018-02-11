@@ -66,13 +66,22 @@ class App extends Component {
   }
 
   setAlarm() {
-    console.log('set alarm!')
+    const {timeInput} = this.state
+    const alarm = moment(timeInput, [
+      'h:mma',
+      'hmma',
+      'H:mm',
+      'Hmm'
+    ])
+    if (alarm < moment()) alarm.add(1, 'd')
+    this.setState({
+      alarm
+    })
   }
 
   formatTime(fmt) {
     const {timeInput} = this.state
     const format = fmt || this.state.format
-    console.log(format)
     if (timeInput === '') return
     const time = moment(timeInput, [
       'h:mma',
