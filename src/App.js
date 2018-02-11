@@ -4,13 +4,15 @@ import ClockDisplay from './ClockDisplay'
 import Format from './Format'
 import AlarmForm from './AlarmForm'
 import AlarmDisplay from './AlarmDisplay'
+import TimerSound from './TimerSound'
 //import './App.css';
 
 
 class App extends Component {
     constructor(props) {
-    super(props);
-    this.state = {
+    super(props)
+    this.audio = new TimerSound()
+    this.state = this.hydrateFromStorage() || {
       time: moment(),
       intervalId: null,
       format: 12,
@@ -26,10 +28,6 @@ class App extends Component {
     this.setAlarm = this.setAlarm.bind(this)
     this.formatTime = this.formatTime.bind(this)
     this.reset = this.reset.bind(this)
-    // this.setAlarm = this.setAlarm.bind(this);
-    // this.removeAlarm = this.removeAlarm.bind(this);
-    // this.checkAlarm = this.checkAlarm.bind(this);
-    // this.resetAlarm = this.resetAlarm.bind(this);
   }
 
   componentDidMount() {
@@ -45,8 +43,24 @@ class App extends Component {
     }, 1000 - time.milliseconds())
   }
 
+  componentDidUpdate() {
+    localStorage.setItem('alarmstate', JSON.stringify(this.state))
+  }
+
   componentWillUnmount() {
     clearInterval(this.state.intervalId)
+  }
+
+  hydrateFromStorage() {
+    const hydratedState = localStorage.getItem('alarmstate')
+    if (!hydratedState) return null
+    const parsed = JSON.parse(hydratedState)
+    return {
+      ...parsed,
+      time: moment(),
+      intervalId: null,
+      alarm: parsed.alarm ? moment(parsed.alarm) : null
+    }
   }
 
   tick() {
@@ -54,7 +68,8 @@ class App extends Component {
     this.setState({
       time: now
     })
-    if (this.state.alarm) this.checkAlarm(now)
+    const {alarm, alert} = this.state
+    if (alarm && !alert) this.checkAlarm(now)
   }
 
   changeFormat(format) {
@@ -114,6 +129,7 @@ class App extends Component {
   }
 
   reset() {
+    this.audio.stop()
     this.setState({
       alarm: null,
       alert: false 
@@ -123,6 +139,7 @@ class App extends Component {
   checkAlarm(now) {
     const {alarm} = this.state
     if (now >= alarm) {
+      this.audio.play()
       this.setState({
         alert: true
       })
