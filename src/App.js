@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import moment from 'moment'
 import ClockDisplay from './ClockDisplay'
 import Format from './Format'
+import AlarmForm from './AlarmForm'
 //import './App.css';
 
 
@@ -12,12 +13,17 @@ class App extends Component {
       time: moment(),
       intervalId: null,
       format: 12,
+      timeInput: '',
+      messageInput: '',
+      formError: null,
       alarm: null,
       alert: false,
-      notify: false
     }
     this.tick = this.tick.bind(this)
     this.changeFormat = this.changeFormat.bind(this)
+    this.updateInput = this.updateInput.bind(this)
+    this.setAlarm = this.setAlarm.bind(this)
+    this.formatTime = this.formatTime.bind(this)
     // this.setAlarm = this.setAlarm.bind(this);
     // this.removeAlarm = this.removeAlarm.bind(this);
     // this.checkAlarm = this.checkAlarm.bind(this);
@@ -42,15 +48,55 @@ class App extends Component {
   }
 
   tick() {
-    this.setState(prevState => {
-      return {
-        time: prevState.time.add(1000)
-      }
+    this.setState({
+      time: moment()
     })
   }
 
   changeFormat(format) {
     this.setState({format})
+    this.formatTime(format)
+  }
+
+  updateInput(event) {
+    const {name, value} = event.target
+    this.setState({
+      [name]: value
+    })
+  }
+
+  setAlarm() {
+    console.log('set alarm!')
+  }
+
+  formatTime(fmt) {
+    const {timeInput} = this.state
+    const format = fmt || this.state.format
+    console.log(format)
+    if (timeInput === '') return
+    const time = moment(timeInput, [
+      'h:mma',
+      'hmma',
+      'H:mm',
+      'Hmm'
+    ])
+    if (!time.isValid()) {
+      return this.setState({
+        formError: 'Not a valid time'
+      })
+    }
+    if (format === 12) {
+      return this.setState({
+        timeInput: time.format('h:mma'),
+        formError: null
+      })
+    }
+    else {
+      return this.setState({
+        timeInput: time.format('H:mm'),
+        formError: null
+      })
+    }
   }
 
   // checkAlarm(time) {
@@ -107,12 +153,20 @@ class App extends Component {
   // }
 
   render() {
-    const {time, format} = this.state
+    const {time, format, timeInput, messageInput, formError} = this.state
     return (
       <div>
         <ClockDisplay
           value={time}
           format={format}
+        />
+        <AlarmForm
+          time={timeInput}
+          message={messageInput}
+          onChange={this.updateInput}
+          onSubmit={this.setAlarm}
+          error={formError}
+          onBlur={this.formatTime}
         />
         <Format
           value={format}

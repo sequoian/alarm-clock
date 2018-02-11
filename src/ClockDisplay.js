@@ -1,5 +1,4 @@
 import React from 'react'
-import moment from 'moment'
 
 const ClockDisplay = ({value, format}) => {
   let h = value.hour()
