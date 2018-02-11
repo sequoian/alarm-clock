@@ -3,6 +3,7 @@ import moment from 'moment'
 import ClockDisplay from './ClockDisplay'
 import Format from './Format'
 import AlarmForm from './AlarmForm'
+import AlarmDisplay from './AlarmDisplay'
 //import './App.css';
 
 
@@ -24,6 +25,7 @@ class App extends Component {
     this.updateInput = this.updateInput.bind(this)
     this.setAlarm = this.setAlarm.bind(this)
     this.formatTime = this.formatTime.bind(this)
+    this.reset = this.reset.bind(this)
     // this.setAlarm = this.setAlarm.bind(this);
     // this.removeAlarm = this.removeAlarm.bind(this);
     // this.checkAlarm = this.checkAlarm.bind(this);
@@ -48,9 +50,11 @@ class App extends Component {
   }
 
   tick() {
+    const now = moment()
     this.setState({
-      time: moment()
+      time: now
     })
+    if (this.state.alarm) this.checkAlarm(now)
   }
 
   changeFormat(format) {
@@ -73,6 +77,7 @@ class App extends Component {
       'H:mm',
       'Hmm'
     ])
+    if (!alarm.isValid()) return
     if (alarm < moment()) alarm.add(1, 'd')
     this.setState({
       alarm
@@ -108,75 +113,48 @@ class App extends Component {
     }
   }
 
-  // checkAlarm(time) {
-  //   if (this.state.alarm && !this.state.alert) {
-  //     if (time.toTimeString() === this.state.alarm.toTimeString()) {
-  //       this.setState({
-  //         alert: true
-  //       })
-        
-  //       // notify user
-  //       if (this.state.notify) {
-  //         const time = this.formatTime(this.state.alarm)
-  //         const n = new Notification ("Alarm", {
-  //           body: `Your alarm for ${time} has gone off.`
-  //         });
-  //       }
-  //     }
-  //   }
-  // }
+  reset() {
+    this.setState({
+      alarm: null,
+      alert: false 
+    })
+  }
 
-  // setAlarm(event, date) {
-  //   // check user for notification permission
-  //   if (!this.state.notify) {
-  //     Notification.requestPermission().then((result) => {
-  //       if (result === 'granted') {
-  //         this.setState({
-  //           notify: true
-  //         });
-  //       }
-  //     });
-  //   }
-
-  //   date.setSeconds(0, 0);
-  //   this.setState({alarm: date});
-  // }
-
-  // removeAlarm() {
-  //   this.setState({alarm: null});
-  // }
-
-  // resetAlarm() {
-  //   this.setState({
-  //     alarm: null,
-  //     alert: false
-  //   })
-  // }
-
-  // formatTime(date) {
-  //   const options = {
-  //     hour: 'numeric',
-  //     minute: 'numeric'
-  //   }
-  //   return date.toLocaleTimeString([], options);
-  // }
+  checkAlarm(now) {
+    const {alarm} = this.state
+    if (now >= alarm) {
+      this.setState({
+        alert: true
+      })
+    }
+  }
 
   render() {
-    const {time, format, timeInput, messageInput, formError} = this.state
+    const {time, format, timeInput, messageInput, formError, alarm, alert} = this.state
     return (
       <div>
         <ClockDisplay
           value={time}
           format={format}
         />
-        <AlarmForm
-          time={timeInput}
-          message={messageInput}
-          onChange={this.updateInput}
-          onSubmit={this.setAlarm}
-          error={formError}
-          onBlur={this.formatTime}
-        />
+        {!alarm
+          ? <AlarmForm
+              time={timeInput}
+              message={messageInput}
+              onChange={this.updateInput}
+              onSubmit={this.setAlarm}
+              error={formError}
+              onBlur={this.formatTime}
+            />
+          : <AlarmDisplay
+              time={alarm}
+              message={messageInput}
+              alert={alert}
+              format={format}
+              onReset={this.reset}
+            />
+        }
+        
         <Format
           value={format}
           onChange={this.changeFormat}
