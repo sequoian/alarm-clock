@@ -43,7 +43,8 @@ class App extends Component {
 
     document.addEventListener('keypress', e => {
       if (e.key === 'Enter') {
-        document.getElementById('primary-btn').click()
+        const btn = document.getElementById('primary-btn')
+        if (btn) btn.click()
       }
     })
   }
@@ -166,6 +167,7 @@ class App extends Component {
           value={time}
           format={format}
         />
+        <div id="display">
         {!alarm
           ? <AlarmForm
               time={timeInput}
@@ -183,7 +185,7 @@ class App extends Component {
               onReset={this.reset}
             />
         }
-        
+        </div>
         <Format
           value={format}
           onChange={this.changeFormat}

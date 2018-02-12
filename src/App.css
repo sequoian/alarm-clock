@@ -3,9 +3,14 @@
   justify-content: center;
   align-items: center;
   height: 100vh;
+  
 }
 
-#display {
+body, button {
+  color: #3e3e3e;
+}
+
+#clock {
   display: flex;
   justify-content: center;
   font-size: 69px;
@@ -21,26 +26,9 @@
   padding-left: 0.25em;
 }
 
-@media (min-width: 576px) {
-  #display {
-    font-size: 90px;
-  }
-}
-
-@media (min-width: 768px) {
-  #display {
-    font-size: 125px;
-  }
-}
-
-@media (min-width: 992px) {
-  #display {
-    font-size: 150px;
-  }
-}
-
-form {
-  margin: 35px 0;
+#display {
+  margin-top: 45px;
+  margin-bottom: 70px;
 }
 
 #inputs {
@@ -51,7 +39,7 @@ form {
 }
 
 input {
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   padding: 2px 5px;
 }
 
@@ -73,7 +61,102 @@ input {
   font-size: 16px;
 }
 
-form button {
+#primary-btn {
+  -webkit-appearance: none;
+  -moz-appearance: none;
   display: block;
-  margin: 5px auto;
+  margin: 0 auto;
+  font-size: 16px;
+  border-radius: 2px;
+  cursor: pointer;
+  background-color: #4787ed;
+  border: 1px solid rgb(3, 61, 138);
+  color: white;
+  padding: 7px 10px;
+}
+
+#format {
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+}
+
+#format > * {
+  margin: 0 10px;
+  font-size: 18px;
+}
+
+#format .active {
+  color: #ff0d86;
+  cursor: default;
+  font-weight: bold;
+}
+
+#format button {
+  font-size: 16px;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  display: inline-block;
+  padding: 0;
+  background-color: white;
+  border: none;
+  text-align: center;
+  cursor: pointer;
+}
+
+#format button:hover {
+  text-decoration: underline
+}
+
+.alarm > div {
+  text-align: center;
+  padding: 20px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.waiting > div {
+  font-weight: normal;
+  color: #949494;
+}
+
+.waiting button {
+  font-size: 18px;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  display: block;
+  margin: 0 auto;
+  padding: 0;
+  background-color: white;
+  color: #ff0d86;
+  border: none;
+  text-align: center;
+  cursor: pointer;
+}
+
+.waiting button:hover {
+  text-decoration: underline;
+}
+
+@media (min-width: 576px) {
+  #clock {
+    font-size: 90px;
+  }
+}
+
+@media (min-width: 768px) {
+  #clock {
+    font-size: 125px;
+  }
+}
+
+@media (min-width: 992px) {
+  #clock {
+    font-size: 150px;
+  }
+
+  #display {
+    margin-top: 75px;
+    margin-bottom: 150px;
+  }
 }

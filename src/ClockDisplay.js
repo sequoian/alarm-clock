@@ -11,7 +11,7 @@ const ClockDisplay = ({value, format}) => {
     if (h === 0) h = 12
   }
   return (
-    <div id="display">
+    <div id="clock">
       <span>{h}</span>
       <span>:</span>
       <span>{m}</span>
