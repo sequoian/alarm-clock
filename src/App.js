@@ -7,7 +7,6 @@ import AlarmDisplay from './AlarmDisplay'
 import TimerSound from './TimerSound'
 //import './App.css';
 
-
 class App extends Component {
     constructor(props) {
     super(props)
@@ -41,6 +40,12 @@ class App extends Component {
       })
       
     }, 1000 - time.milliseconds())
+
+    document.addEventListener('keypress', e => {
+      if (e.key === 'Enter') {
+        document.getElementById('primary-btn').click()
+      }
+    })
   }
 
   componentDidUpdate() {
@@ -55,11 +60,15 @@ class App extends Component {
     const hydratedState = localStorage.getItem('alarmstate')
     if (!hydratedState) return null
     const parsed = JSON.parse(hydratedState)
+    const alarm = parsed.alarm ? moment(parsed.alarm) : null
     return {
       ...parsed,
       time: moment(),
       intervalId: null,
-      alarm: parsed.alarm ? moment(parsed.alarm) : null
+      formError: null,
+      alarm: alarm,
+      // set alert to true if alarm is past due to avoid unnecessary timer sound
+      alert: (alarm && moment().subtract(1000 * 60 * 5) > alarm ) ? true : parsed.alert
     }
   }
 
@@ -86,13 +95,16 @@ class App extends Component {
 
   setAlarm() {
     const {timeInput} = this.state
+    this.formatTime()
     const alarm = moment(timeInput, [
       'h:mma',
       'hmma',
       'H:mm',
       'Hmm'
     ])
-    if (!alarm.isValid()) return
+    if (!alarm.isValid()) return this.setState({
+      formError: 'Not a valid time'
+    })
     if (alarm < moment()) alarm.add(1, 'd')
     this.setState({
       alarm

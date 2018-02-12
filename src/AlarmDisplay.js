@@ -22,10 +22,10 @@ const AlarmDisplay = ({time, message, alert, format, onReset}) => (
 
 const Button = ({alert, onReset}) => {
   if (alert) return (
-    <button onClick={onReset}>Done</button>
+    <button id="primary-btn" onClick={onReset}>Done</button>
   )
   else return (
-    <button onClick={onReset}>cancel</button>
+    <button id="primary-btn" onClick={onReset}>cancel</button>
   )
 }
 

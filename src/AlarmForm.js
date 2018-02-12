@@ -10,6 +10,8 @@ const AlarmForm = ({time, message, onChange, onSubmit, error, onBlur}) => (
       value={time}
       onChange={onChange}
       onBlur={() => onBlur()}
+      onFocus={e => e.target.select()}
+      autoFocus
     />
     <input
       type="text"
@@ -20,6 +22,7 @@ const AlarmForm = ({time, message, onChange, onSubmit, error, onBlur}) => (
     />
     <button
       type="button"
+      id="primary-btn"
       onClick={onSubmit}
     >Set Alarm</button>
   </form>
