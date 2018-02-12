@@ -5,7 +5,7 @@ import Format from './Format'
 import AlarmForm from './AlarmForm'
 import AlarmDisplay from './AlarmDisplay'
 import TimerSound from './TimerSound'
-//import './App.css';
+import './App.css';
 
 class App extends Component {
     constructor(props) {

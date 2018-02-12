@@ -11,16 +11,17 @@ const ClockDisplay = ({value, format}) => {
     if (h === 0) h = 12
   }
   return (
-    <div>
+    <div id="display">
       <span>{h}</span>
       <span>:</span>
       <span>{m}</span>
-      <span>:</span>
-      <span>{s}</span>
-      {format === 12 ?
-        <span>{period}</span>
-        : null
-      }
+      <span className={format === 12 ? 'sub-info si12' : 'sub-info si24'}>
+        <span>{s}</span>
+        {format === 12 ?
+          <span>{period}</span>
+          : null
+        }
+      </span>
     </div>
   )
 }
